@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -20,6 +21,7 @@ type Redoc struct {
 	DocsPath    string
 	SpecPath    string
 	SpecFile    string
+	SpecDir     string
 	SpecFS      *embed.FS
 	Title       string
 	Description string
@@ -82,6 +84,10 @@ func (r Redoc) Handler() http.HandlerFunc {
 		r.SpecPath = "/openapi.json"
 	}
 
+	if r.SpecDir == "" {
+		r.SpecDir = "components"
+	}
+
 	var spec []byte
 	if r.SpecFS == nil {
 		spec, err = os.ReadFile(specFile)
@@ -114,6 +120,19 @@ func (r Redoc) Handler() http.HandlerFunc {
 			header.Set("Content-Type", "text/html")
 			w.WriteHeader(http.StatusOK)
 			_, _ = w.Write(data)
+			return
+		}
+
+		// load sub spec
+		p := filepath.Join(r.SpecDir, filepath.FromSlash(req.URL.Path))
+		subSpec, err := os.ReadFile(p)
+		header.Set("Content-Type", "application/json")
+
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+		} else {
+			_, _ = w.Write(subSpec)
+			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
