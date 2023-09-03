@@ -36,7 +36,7 @@ var HTML string
 // JavaScript represents the redoc standalone javascript
 //
 //go:embed assets/redoc.standalone.js
-// var JavaScript string
+var JavaScript string
 
 // Body returns the final html with the js in the body
 func (r Redoc) Body() ([]byte, error) {
@@ -56,7 +56,7 @@ func (r Redoc) Body() ([]byte, error) {
 	}
 
 	if err = tpl.Execute(buf, map[string]string{
-		// "body":        JavaScript,
+		"body":        JavaScript,
 		"title":       r.Title,
 		"url":         r.SpecPath,
 		"description": r.Description,
