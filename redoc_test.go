@@ -95,7 +95,7 @@ func TestRedocWithOptions(t *testing.T) {
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			assert.Equal(t, "application/json", resp.Header.Get("Content-Type"))
 
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			assert.NoError(t, err)
 			assert.Contains(t, string(body), `"swagger":"2.0"`)
 		})
@@ -109,7 +109,7 @@ func TestRedocWithOptions(t *testing.T) {
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			assert.Equal(t, "text/html", resp.Header.Get("Content-Type"))
 
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			assert.NoError(t, err)
 			assert.Contains(t, string(body), r.Title)
 			assert.Contains(t, string(body), `{"disableSearch`)
